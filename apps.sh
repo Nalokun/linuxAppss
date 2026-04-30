@@ -37,3 +37,10 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 # test docker
 sudo docker run hello-world
 
+# telegram desktop
+cd ~/Downloads
+curl -L https://telegram.org/dl/desktop/linux -o ~/Downloads/telegram.tar.xz
+mkdir telegramDir;
+cd telegramDir
+tar -xf ~/Downloads/telegram.tar.xz
+
