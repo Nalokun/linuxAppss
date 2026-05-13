@@ -1,44 +1,21 @@
 #!/bin/bash
 
-MODE="$1"
-FILE="/tmp/shot_$(date +%Y-%m-%d_%H-%M-%S).png"
-API_KEY=""
-# تحديد نوع التصوير
-if [ "$MODE" = "full" ]; then
-    maim "$FILE"
-elif [ "$MODE" = "area" ]; then
-    maim -s "$FILE"
-else
-    echo "Usage: $0 [full|area]"
-    exit 1
+# تحقق من أن الملف موجود
+if [ -z "$1" ]; then
+  echo "Usage: $0 <image_path>"
+  exit 1
 fi
 
-# التأكد من وجود الصورة
-[ ! -f "$FILE" ] && exit
+FILE="$1"
+# s5WVhGoTLYeZgyN9GML3lKie9rzRWbyAfh3XO2RjKsk=
+API_KEY=""  # ضع مفتاحك هنا
 
-# نافذة معاينة + تأكيد باستخدام yad
-yad --title="معاينة الصورة" \
-    --image="$FILE" \
-    --text="هل تريد رفع الصورة؟" \
-    --button=نعم:0 \
-    --button=إعادة_التقاط:2 \
-    --button=إلغاء:1
+# رفع الصورة إلى ImgBB
+URL=$(curl --silent --location --request POST "https://api.imgbb.com/1/upload?expiration=600&key=$API_KEY" \
+--form "image=@$FILE" | jq -r '.data.url_viewer')
 
-RESPONSE=$?
-
-if [ "$RESPONSE" -eq 0 ]; then
-URL=$(curl -s --location "https://api.imgbb.com/1/upload?key=${API_KEY}" \
-        --form "image=@${FILE}" | jq -r '.data.url')
-
+# نسخ الرابط للحافظة
 echo -n "$URL" | xclip -selection clipboard
 
-notify-send "تم الرفع" "$URL"
-
-elif [ "$RESPONSE" -eq 2 ]; then
-    rm "$FILE"
-    exec "$0" "$MODE"   # إعادة تشغيل السكربت بنفس الوضع
-
-else
-    rm "$FILE"
-    notify-send "تم الإلغاء" "لم يتم رفع الصورة"
-fi
+# إشعار بنجاح العملية
+notify-send "ImgBB Upload" "تم رفع الصورة! الرابط جاهز في الحافظة."
