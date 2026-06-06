@@ -29,6 +29,12 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 * make terminal more good look
 ```bash
 curl -sS https://starship.rs/install.sh | sh
-echo eval "$(starship init bash)" >> ~/bashrc
-source ~/bashrc
+echo eval "$(starship init bash)" >> ~/.bashrc
+source ~/.bashrc
 ```
+# copyq
+curl -s https://api.github.com/repos/hluk/CopyQ/releases/latest \
+| grep browser_download_url \
+| grep AppImage \
+| cut -d '"' -f 4 \
+| xargs curl -L -o CopyQ.AppImage
