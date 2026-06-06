@@ -43,4 +43,10 @@ curl -L https://telegram.org/dl/desktop/linux -o ~/Downloads/telegram.tar.xz
 mkdir telegramDir;
 cd telegramDir
 tar -xf ~/Downloads/telegram.tar.xz
+# copyq
+curl -s https://api.github.com/repos/hluk/CopyQ/releases/latest
+| grep browser_download_url
+| grep AppImage
+| cut -d '"' -f 4
+| xargs curl -L -o CopyQ.AppImage
 
