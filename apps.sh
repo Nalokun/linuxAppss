@@ -21,22 +21,21 @@ node -v # Should print "v24.14.1".
 # Verify npm version:
 npm -v # Should print "11.11.0".
 # vscode
+echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
+sudo apt install wget gpg &&
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft.gpg
+sudo tee /etc/apt/sources.list.d/vscode.sources > /dev/null << 'EOF'
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64,arm64,armhf
+Signed-By: /usr/share/keyrings/microsoft.gpg
+EOF
 sudo apt update
 sudo apt install code
 # brave origin
 curl -fsS https://dl.brave.com/install.sh | FLAVOR=origin CHANNEL=nightly sh
-# install docker 
-sudo apt-get update
-sudo apt-get install ca-certificates curl gnupg
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-# test docker
-sudo docker run hello-world
-
 # telegram desktop
 cd ~/Downloads
 curl -L https://telegram.org/dl/desktop/linux -o ~/Downloads/telegram.tar.xz
